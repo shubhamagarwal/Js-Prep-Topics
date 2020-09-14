@@ -1,0 +1,238 @@
+React Hooks Videos (https://www.youtube.com/watch?v=tEqNSOhCHLU)
+
+1. Implement react hooks
+
+2. CSS/HTML
+	- box model
+	- flex box
+	- absolute vs relative
+	- pseudo elements
+	- pseudo classes (https://www.w3schools.com/css/css_pseudo_elements.asp)
+	
+3. mixin, css preprocessor (https://sass-lang.com/documentation/values/colors)
+
+4. all concept of JS ( Most of them are in codepen)
+	- data type https://javascript.info/types
+	- ways to create object - 5 ways
+	- prototypal inheritance -> only inherits prototypal properties, don't use .call
+	- classical inheitance -> only inherits internal props via .call only, don't use object.create
+	- Throttling
+	- debouncing
+	- mixin -> https://javascript.info/mixins
+	- polyfill => reduce, call, apply, bind https://blog.usejournal.com/implement-your-own-call-apply-and-bind-method-in-javascript-42cc85dba1b
+	- polyfill for forEach, filter, reduce, map https://reeversedev.com/polyfill-for-foreach-map-filter-reduce	
+	- currying js sum(1)(2)(3)....(100) https://theanubhav.com/2019/02/03/js-currying-in-interview/   
+	- Object.assign vs spread (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create)
+	- callback hell
+	- css preprosser
+	- closure
+	- hoisting
+	- flat method and related questions on flat (https://medium.com/dailyjs/flatten-array-using-array-flat-in-javascript-ee4d0b2423e5 & msdn)
+	- middleware thunk saga
+	- hooks for react-redux https://blog.bitsrc.io/using-react-redux-hooks-97654aff01e4
+	- custom hooks (https://medium.com/@soumyatiwari392/10-essential-custom-react-hooks-chapter-i-3ef82d304593)
+	- middleware (https://medium.com/@shoshanarosenfield/redux-thunk-vs-redux-saga-93fe82878b2d)
+	- Testing Lib (chai , mocha, jest)
+		sinon ->test spies, stubs and mocks for JavaScript. (sinon.spy)
+		chai -> assertion lib (expect, should)
+		jest-> assertion lib, Use Jest to capture snapshots of React components
+		enzyme -> shallow, mount
+		mocha -> test runner  used to run your tests and log your test results
+	- react lifecycle https://reactjs.org/docs/react-component.html#static-getderivedstatefromprops
+	- Object.create vs new https://medium.com/@jonathanvox01/understanding-the-difference-between-object-create-and-the-new-operator-b2a2f4749358
+	- generators
+	- iterators
+	- how to create private property in class
+	- private, privilaged, public, static proptery  https://robertnyman.com/2008/10/14/javascript-how-to-get-private-privileged-public-and-static-members-properties-and-methods/
+	- lazy loading & code splitting (using dynamic import we can achive code spliting or we can do this by webpack) 
+		https://blog.bitsrc.io/lazy-loading-react-components-with-react-lazy-and-suspense-f05c4cfde10c   https://reactjs.org/docs/code-splitting.html
+	- virtual scroll https://blog.logrocket.com/virtual-scrolling-core-principles-and-basic-implementation-in-react/
+	- assessibility
+	- Service Worker https://levelup.gitconnected.com/a-guide-to-service-workers-in-react-js-82aec1d6a22d  https://developers.google.com/web/fundamentals/primers/service-workers/lifecycle
+	- promise  https://javascript.info/promise-basics
+	- Promise polyfill https://brunoscopelliti.com/lets-write-a-promise-polyfill/
+	- async await  https://javascript.info/async-await
+	- http vs http2 https://medium.com/@factoryhr/http-2-the-difference-between-http-1-1-benefits-and-how-to-use-it-38094fa0e95b
+	- profiling https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html   https://reactjs.org/docs/optimizing-performance.html#profiling-components-with-the-chrome-performance-tab
+	- webpack 4 https://webpack.js.org/plugins/uglifyjs-webpack-plugin/
+	- XSS( Cross site) https://owasp.org/www-community/attacks/xss/
+	- create your own redux https://medium.com/@patrykandrzejewski/how-to-create-your-own-redux-9f89a80875e5  https://blog.jakoblind.no/learn-react-redux-by-coding-the-connect-function-yourself/
+	
+	- update caching/versioning when new relese is sent    https://code-boxx.com/force-browsers-reload-javascript-css/
+	- how many parallel request http1 ( 4 to 6 in chrome) https://http2.github.io/faq/#why-is-http2-multiplexed
+	- how to pass props in react.lazy  https://medium.com/javascript-in-plain-english/code-splitting-for-efficient-loading-how-to-use-react-lazy-imports-suspense-and-hoc-fabc8fb6525a
+	- arrow function vs function-context   https://dmitripavlutin.com/differences-between-arrow-and-regular-functions/ https://medium.com/tfogo/advantages-and-pitfalls-of-arrow-functions-a16f0835799e
+	- diff between rendering & paiting : Render refers to show output in browser and @JavaScript (programming language) utilize the document object to manipulate DOM elements. You can get and set element through document. getelementbyid() to manipulate the rendered elements.
+			Painting is the process of filling in pixels. It involves drawing out text, colors, images, borders, and shadows, essentially every visual part of the elements. The drawing is typically done onto multiple surfaces, often called layers.
+	
+	- if async call is required can we make in did mount
+	- pure component vs component
+	- SEO
+	- configuring babel- transpiler
+	- connect function   https://react-redux.js.org/api/connect
+	- async redux load   https://codepen.io/Shubham150/pen/XWmGVNa
+	- class vs function component
+	- webpack v4 vs v5   https://blog.logrocket.com/new-features-in-webpack-5-2559755adf5e/  https://github.com/webpack/changelog-v5/blob/master/README.md
+	- commonjs vs requirejs vs es6 vs AMD https://medium.com/computed-comparisons/commonjs-vs-amd-vs-requirejs-vs-es6-modules-2e814b114a0b  http://voidcanvas.com/import-vs-require/
+	- graphql
+	- event loop   https://www.youtube.com/watch?v=8aGhZQkoFbQ (The event loop job is to look at the stack and look at the task q, if the 
+		stack is empty it takes the first thing on the q and pushed it on to the stack)
+	- map vs forEach https://codeburst.io/javascript-map-vs-foreach-f38111822c0f
+	- flex css
+	- test cases
+	- useCallback vs useMemo https://medium.com/@jan.hesters/usecallback-vs-usememo-c23ad1dc60
+			In other words, useCallback gives you referential equality between renders for functions. And useMemo gives you referential equality between renders for values.
+			useCallback is useful when passing callback to optimized child components that rely on reference eqality to prevent unnessery changes.
+	- Event bubbling -> When an event happens on an element, it first runs the handlers on it, then on its parent, then all the way up on other ancestors.
+			use event.stopPropogation() to stop this.
+	- React Router hooks - https://dev.to/finallynero/hooks-introduced-in-react-router-v5-1-7g8
+	- Browser vs hash history :- The biggest difference between the two is how they create a location from a URL. The browser history uses the full URL [3], while the hash history only uses the portion of the URL located after the first hash symbol.
+	- Pure Components (Its return value is only determined by its input values
+		Its return value is always the same for the same input values) https://blog.logrocket.com/pure-functional-components-in-react-16-6/
+	- scope https://dev.to/sandy8111112004/javascript-introduction-to-scope-function-scope-block-scope-d11
+	- implement all lifecycle method in functional component
+	- why not to make api call in constructor  https://medium.com/@santoshpunase/integrating-apis-in-react-js-constructor-vs-componentwillmount-vs-componentdidmount-e0b98c3efecd
+				https://medium.com/devinder/why-api-call-is-recommended-in-componentdidmount-38c8c3c57834
+	- check authorization or check user access for different parts of application https://www.digitalocean.com/community/tutorials/react-simple-authorization
+	- Good Read : http://www.bradoncode.com/blog/2015/08/26/javascript-semi-colon-insertion/
+	-  rest vs spread https://medium.com/@luke_smaki/javascript-es6-spread-operator-and-rest-parameters-b3e89d112281
+	- dependency injection https://dev.to/azure/dependency-injection-in-javascript-101-2b1e
+	- Tree shaking https://webpack.js.org/guides/tree-shaking/   https://www.telerik.com/blogs/tree-shaking-basics-for-react-applications
+	- JavaScript Promises Versus RxJS Observables  https://coryrylan.com/blog/javascript-promises-versus-rxjs-observables
+	- compare all life cycle method in function : https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state
+	- check prev and next props in functional component https://stackoverflow.com/questions/53446020/how-to-compare-oldvalues-and-newvalues-on-react-hooks-useeffect  https://blog.logrocket.com/how-to-get-previous-props-state-with-react-hooks/
+	-  fcp and fmp  https://www.acmethemes.com/blog/first-contentful-paint-and-first-meaningful-paint/#What_is_First_Contentful_Paint_(FCP)
+	- improve react perf https://blog.bitsrc.io/10-ways-to-optimize-your-react-apps-performance-e5e437c9abce
+	
+	- capturing and bubbling: https://javascript.info/bubbling-and-capturing
+	- event delegation: https://javascript.info/event-delegation
+	
+	- SSR and CSR https://medium.com/walmartlabs/the-benefits-of-server-side-rendering-over-client-side-rendering-5d07ff2cefe8
+	- factory function vs constructor fun https://medium.com/@chamikakasun/javascript-factory-functions-vs-constructor-functions-585919818afe
+	
+	- store JWT token https://dev.to/gkoniaris/how-to-securely-store-jwt-tokens-51cf, https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage
+	- cookie in token https://medium.com/@ryanchenkie_40935/react-authentication-how-to-store-jwt-in-a-cookie-346519310e81
+	
+	- SOLID Principle https://scotch.io/bar-talk/s-o-l-i-d-the-first-five-principles-of-object-oriented-design
+	- KISS, YAGNI, DRY Principle https://www.itexico.com/blog/software-development-kiss-yagni-dry-3-principles-to-simplify-your-life
+	- code splitting via webpack https://webpack.js.org/guides/code-splitting/
+	- multiple entry points webpack https://github.com/webpack/docs/wiki/multiple-entry-points
+	- Structured Data Markup https://neilpatel.com/blog/structured-data/ https://developers.google.com/search/docs/guides/intro-structured-data
+	- Polling in JS https://levelup.gitconnected.com/polling-in-javascript-ab2d6378705a
+	- npm-vs-bower-vs-browserify-vs-gulp-vs-grunt-vs-webpack  https://stackoverflow.com/questions/35062852/npm-vs-bower-vs-browserify-vs-gulp-vs-grunt-vs-webpack
+	- node js error logger (winston) https://www.loggly.com/blog/node-js-libraries-make-sophisticated-logging-simpler/
+	- XSS prevention https://medium.com/@shashankvivek.7/understanding-xss-and-preventing-it-using-pure-javascript-ef0668b37687 
+	- generators https://javascript.info/generators
+	
+	- cache https://www.digitalocean.com/community/tutorials/js-cache-api https://developer.mozilla.org/en-US/docs/Web/API/Cache/add
+	- dont't want to  cache https://www.geeksforgeeks.org/how-to-clear-cache-memory-using-javascript/
+	- cache control headers https://www.imperva.com/learn/performance/cache-control/  https://www.imperva.com/learn/performance/cdn-caching/
+	- super in react https://overreacted.io/why-do-we-write-super-props/ https://stackoverflow.com/questions/40433463/what-does-calling-super-in-a-react-constructor-do
+	- web security https://www.cloudflare.com/learning/security/what-is-web-application-security/
+	- composition vs interitance https://medium.com/javascript-in-plain-english/inheritance-is-a-vs-composition-has-a-in-javascript-98fb96dfa0e6
+	- BEM CSS https://css-tricks.com/bem-101/
+	- block vs inline elemtns
+	- position in css (relative, absoulute)
+	- display: block, display: inline
+	
+	
+5. Miscellenous Topic
+	- JWT (JSON Web Token) ->https://jwt.io/introduction/,  https://medium.com/dev-bits/a-guide-for-adding-jwt-token-based-authentication-to-your-single-page-nodejs-applications-c403f7cf04f4
+	- React with GraphQL repo
+	- sorting
+	- searching
+	- Tree
+	- graph
+	- DS series https://www.youtube.com/playlist?list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P
+	- complexity chart https://www.bigocheatsheet.com/
+	- remove duplicate from array https://levelup.gitconnected.com/7-ways-to-remove-duplicates-from-array-in-javascript-cea4144caf31
+	- Linked List https://www.geeksforgeeks.org/top-20-linked-list-interview-question/
+		https://medium.com/@codingfreak/linked-list-interview-questions-and-practice-problems-55f75302d613	
+	
+	
+5. programming questions https://www.thatjsdude.com/interview/js1.html
+6. add snippet for VS code
+7. Webpack and bundling : https://www.toptal.com/javascript/a-guide-to-managing-webpack-dependencies
+	- react production build https://www.youtube.com/watch?v=517npPWIb8Q
+8. Server side rendering : https://github.com/satansdeer/ssr-example && https://www.youtube.com/watch?v=NwyQONeqRXA 
+9. Interview Process prep: https://dev.to/emmabostian/decoding-the-front-end-interview-process-14dl
+10. Js & React Prep Videos: https://egghead.io/browse/frameworks/javascript
+11. graphql, react, full stack : https://www.youtube.com/watch?v=I6ypD7qv3Z8
+
+
+---------------------------------------------------------
+11. Assessibility
+
+Accessibility
+
+1: **** What is Accessibility? What are the different standards to achieve accessibility?  à
+
+Ø  A, AA, AAA, Section 508
+
+2: What are ARIA-tags à
+
+Ø  Used to improve the accessibility of Rich Internet Applications, Accessible Rich Internet Applications, enhance the semantics of a web site
+
+3: What build tools have you incorporated to test for code level accessibility compliance  à
+
+Ø  pa11y, react-axe
+
+4: What are the accessibility testing/screen reading tools you have used? à
+
+Ø  JAWS, NVIDIA, VoiceOver, Talkback
+
+5: How do you make Input field accessible? à
+
+Ø  By matching Label FOR and input ID attribute or aria-labelledby
+6. our Major Categories of Accessibility -->  POUR https://www.boia.org/blog/what-are-the-four-major-categories-of-accessibility
+------------------------------------------------------------------------------------
+
+12. AWS based ques :-
+
+ - OSI Layer
+ - Load balancer https://docs.aws.amazon.com/AmazonECS/latest/developerguide/load-balancer-types.html
+ - distributed system https://www.confluent.io/learn/distributed-systems/
+ - AWS Lambda, serverless - https://stackify.com/aws-lambda-serverless/ (AWS Lambda is a serverless computing service provided by Amazon Web Services (AWS). ... The concept of “serverless” computing refers to not needing to maintain your own servers to run these functions. AWS Lambda is a fully managed service that takes care of all the infrastructure for you.)
+ - Mircroservice Architecture vs monolith https://www.youtube.com/watch?v=qYhRvH9tJKw
+ - pizza delivery system https://www.youtube.com/watch?v=SqcXvc3ZmRU
+ - System Design Basics: Horizontal vs. Vertical Scaling https://www.youtube.com/watch?v=xpDnVSmNFX0
+
+rfce snippet
+
+https://github.com/jonasschmedtmann/complete-javascript-course
+
+DS Problems :
+
+https://github.com/gopinav/Problem-solving-with-Javascript
+https://www.thatjsdude.com/interview/js1.html#primFactors
+https://github.com/knaxus/problem-solving-javascript/tree/master/src/_Problems_
+--------------------------------------------------------------------------------------------
+make div center align
+https://stackoverflow.com/questions/19026884/flexbox-center-horizontally-and-vertically
+
+html, body {
+    height: 100%;
+}
+
+.flex-container {
+    height: 100%;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+<div class="flex-container">
+    
+        <div class="flex-item">1</div>
+        
+    
+</div>
+
+
+
+
+
+
+
+ 

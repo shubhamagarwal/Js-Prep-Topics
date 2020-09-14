@@ -1,0 +1,314 @@
+Questioner we discussed during our call
+
+ 
+
+ 
+
+1: SOLID principles. Explain any 2 à
+
+Ø  Single responsibility, Open-closed, Liskov substitution principle, Interface segregation, Dependency Inversion
+
+2: Can you please explain the DRY principle? à
+
+Ø  Don’t repeat yourself, reusable code
+
+3: Explain Null vs Undefined in Javascript à
+
+Ø  Null is type of Object while undefined is type of undefined, undefined is no value assign to defined variable while Null can be a value to define no value to variables.
+
+4: How do you secure your Javascript code? à
+
+Ø  Obfuscating JS code, Minification
+
+4a: What is CSRF (Cross-Site Request Forgery) à
+
+Ø  Cross site request forgery is a type of security attack
+
+4b: What do you understand with XSS à
+
+Ø  Inject malicious code into website using different approaches, like Reuest headers, Cookies
+
+
+
+
+
+
+
+Front End Architect:
+
+1: Have you got any experience architecting the front end/solution for a project from scratch?
+
+**** What are the key architectural considerations you make while designing one? à
+
+Ø  NFRs like Performance, SEO, Security, Scalability, etc should be considered
+
+2: **** How do you decide on a Framework/Tech stack for your solution? à
+
+Ø  Popularity and stability of framework, faster development, availability of developers, availability of tools for debugging, testing Integration framework available, Community support, etc.
+
+3: What is your understanding of Atomic design pattern? à
+
+Ø  Components should have minimum responsibility and smallest possible units should be used to design a layout, terminologies like atoms, molecules, organisms, pages should be used in explanation
+
+
+
+
+
+
+Caching:
+
+1: What are the different layers of caching that you have implemented / have experience of? à
+
+Ø  eg: Browser, Redis, Akamai etc
+
+2: **** How are Cookies and local storage different à
+
+Ø  Cookies travel with Requests while local storage not, also size differs for both of them
+
+
+
+Performance
+
+1: How will you measure performance of any site? à
+
+Ø  Chrome Dev Toolbar – Network, Audit Tools, Profiling, Lighthouse
+
+2: What do you understand by performance metrices like TTFB, TTI, FCP and FMP? à
+
+Ø  Time to first byte, Time to Interactivity, First Contentful Paint, First Meaningful Paint
+
+3: What is the diff between FCP and FMP? à
+
+Ø  First contentful paint and First meaningful paint
+
+4: What build tools have you incorporated to test for quality of CSS and JS during development.à
+
+Ø  ES Lint, CSS Lint, Flow, Grunt, Gulp, Browserify
+
+5: **** Mention some approaches for reducing HTTP requests on page? à
+
+Ø  Lazy loading images and JS bundles, Combining JS or CSS requests, combining images/icons using Sprites
+
+6: **** Do you think JS files added inside the body tag can impact page rendering?à
+
+Ø  If yes –
+
+Ø  **** 6a: then how can we make them unblocking? à
+
+> By using Async/Defer
+
+7: How can one find out the Execution scope and order of functions with their time taken using some tool? à
+
+Ø  Profiling tool available in browser like Chrome, Firefox and Safari
+
+ 
+
+JavaScript
+
+ 
+
+1: Which JS design patterns have you used/familiar with? à
+
+Ø  Singleton, Namespace, Façade, Modular, Module Revealing, Observer …
+
+2: **** What is “closure” in javascript? Can you provide an example? à
+
+Ø  Related to encapsulation and maintain the context for later usage
+
+3: ES6: What do you understand by the temporal dead zone? à
+
+Ø  Variables can’t be accessed before they are defined
+
+4: **** Do you know what does “Context” mean in JavaScript? à
+
+Ø  Context is value of the keyword “this” which is a reference to the object that “owns” the currently executing scope for the function
+
+Ø  **** 4a:  How do you change the Context of a given function?à
+
+  > By any of function – apply/call/bind
+
+5. What is your experience with JS frameworks/ Libraries, which ones are you comfortable with? à
+
+Ø  Angular, React
+
+6. Have you used any front- end build/automation tools/frameworks? à
+
+Ø  Grunt/Gulp/Webpack
+
+7. **** Have you used or familiar with automated testing in JS? Have you written unit/end to end test cases in JS? (Test driven Development) à
+
+Ø  Jest, Enzyme, Mocha, Jasmine, Karma, Chai
+
+8. What do you understand by Tree Shaking? à
+
+Ø  Removing dead/redundant code or code that is not used anywhere in modules
+
+9: **** What is a call back function? What are promises – what problem does it solve? à
+
+Ø  Function that can run after some Async call or after any function that is passed to other function and/or executed with some condition.
+
+Ø  Promises solves callback hell problem
+
+ 
+
+
+
+HTML
+
+1: **** Can you name some HTML5 features/APIs? à
+
+Ø  Canvas, Websockets, Local Storage, Geolocation
+
+New elements such as Header, Footer, Video, Audio
+
+2: **** Do you understand what semantic markup is and how do you follow it in your code? à
+
+Ø  Using meaningful HTML Tags for creating the page layout.
+
+3: What are data- attributes good for? à
+
+Ø  assigns custom data to an element, store page/application specific data
+
+4: What do you understand by Web Workers / What purpose do they serve? à
+
+Ø  Running scripts in background, multi-threaded architecture
+
+5: What is a manifest file in context of PWA(Progressive Web App)? à
+
+Ø  A file that contain meta data for a given system
+
+6: **** How do you disable/enable pinch-zoom for your web app? à
+
+Ø  Using Meta viewport
+
+ 
+
+CSS
+
+1. Any exposure to CSS preprocessors? à
+
+Ø  Keywords: SASS, LESS,
+
+2. **** Any CSS framework? à
+
+Ø  Bootstrap, foundation, 960 grid system, PURE, BLUMA, Sematic AI Milligram
+
+3. **** Do you understand CSS specificity? à
+
+Ø  CSS specificity is the rule by which browser decides on which styles should be applied on any element from given multiple style definition for same.
+
+4. Describe BFC(Block Formatting Context) and how it works. à
+
+Ø  Floats, absolutely positioned elements, block containers
+
+5. Describe pseudo-elements and discuss what they are used for. à
+
+Ø  special state of an element (hover, visited, focused)
+
+ 
+
+ 
+
+Responsive Development
+
+1: Any experience in Responsive? How do you achieve responsive behavior à
+
+Ø  Bootstrap, Media Queries.
+
+1a: **** What breakpoints and viewports do you support for responsive? à
+
+>  mobile, tablet, desktop
+
+1b: How do you handle landscape vs portrait Views using media queries? à
+
+>  orientation – portrait or landcape
+
+2: **** What is your approach for a Responsive implementation à
+
+Ø  Mobile first / desktop first.
+
+3. **** What is Responsive Grid System? à
+
+Ø  Fluid Columns, number of columns, shrink and expand as you resize the browser window.
+
+4. How do you handle responsive foreground Images / assets? à
+
+Ø  Image SRCSET, picture tag with media queries
+
+ 
+
+Accessibility
+
+1: **** What is Accessibility? What are the different standards to achieve accessibility?  à
+
+Ø  A, AA, AAA, Section 508
+
+2: What are ARIA-tags à
+
+Ø  Used to improve the accessibility of Rich Internet Applications, Accessible Rich Internet Applications, enhance the semantics of a web site
+
+3: What build tools have you incorporated to test for code level accessibility compliance  à
+
+Ø  pa11y, react-axe
+
+4: What are the accessibility testing/screen reading tools you have used? à
+
+Ø  JAWS, NVIDIA, VoiceOver, Talkback
+
+5: How do you make Input field accessible? à
+
+Ø  By matching Label FOR and input ID attribute or aria-labelledby
+
+
+
+
+
+
+REACT
+
+1: What are React Hooks? à
+
+Ø  API to use state or some other features for non-class components
+
+2: What is useState() in React? à
+
+Ø  A React hook API to handle state/data for components
+
+3: **** What is prop drilling? à
+
+Ø  Passing data to children/child components
+
+Ø  3a: How can you avoid it? à
+
+> using context api, create separate containers
+
+4: **** What do you understand by side effects? à
+
+Ø  Managing AJAX/API requests, managing Async activities
+
+5: **** How do you pass the data to React component from Redux store? à
+
+Ø  Using react-redux Connect API method
+
+6: What are middlewares and why are they used in React Redux? à
+
+Ø  a way to provide common methods that intersects all actions dispatched.
+
+
+
+
+
+sapient:-
+
+solid principle
+FMP first menaing ful paint
+temporal dead zone in es6
+pinch zoom
+HTML data-* Attribute
+semantic markup
+formatting contexts
+css specificity
+picture tag
+accessibility and which tool you used
+Side effects mean in React?
+A11Y project

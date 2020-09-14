@@ -1,0 +1,670 @@
+import sinon from 'sinon'
+import { expect } from 'chai'
+import { setStore } from 'store/storeContainer'
+import configureStore from 'redux-mock-store'
+import {
+  bulkExclude,
+  executeBulkExclude,
+  exclude,
+  executeExclude,
+  bulkInclude,
+  executeBulkInclude,
+  include,
+  executeInclude,
+  postUpdate,
+  delayTillUpdated,
+  hasAssetBeenUpdated,
+  getExcludedProjectsForGivenID,
+  __RewireAPI__ as rewireAPI
+} from '../excludeIncludeController'
+
+const cmisURL = 'https://mock.api.pearson.com/content/cmis/uswip-aws'
+const assetPlanURN = 'urn:pearson:distributable:123'
+const folderPath = '/Company Home/Sites/alfresco-blueprint/folder1'
+const selectedAlfrescoItems = ['asset1', 'asset2']
+const folder1ExcludedItems = [
+  'excludedAsset1',
+  'excludedAsset2',
+  'excludedAsset3'
+]
+const assetID = '11e326d0-8fda-4c0c-ab38-2d477c601a70'
+
+const getAlfrescoFolderItemStubResult = [
+  {
+    id: 'd8e6750d-2a31-4505-b459-033499b30ed4',
+    name: 'IMAGEPNG.png',
+    title: 'IMAGEPNG',
+    workURN: 'urn:pearson:work:111',
+    description: 'test description for IMAGEPNG',
+    mimeType: 'image/png',
+    sizeInBytes: 8469
+  },
+  {
+    id: '171838fe-b8d3-4ca2-9c13-82f097e24eec',
+    name: 'bird.avi',
+    title: 'Bird',
+    workURN: '',
+    description: '',
+    mimeType: 'video/avi',
+    sizeInBytes: 1496576
+  }
+]
+
+const initialState = {
+  assetPlan: {
+    planDetails: {
+      mappedData: {
+        id: 'urn:pearson:distributable:123',
+        cmisURL: 'https://mock.api.pearson.com/content/cmis/uswip-aws'
+      }
+    }
+  },
+  assetPairing: {
+    assetRequestsWurn: ['work:random', 'work:paired', 'work:evenMoreRaNDOm'],
+    alfrescoFolders: {
+      1: {
+        name: 'folder1',
+        id: '1',
+        path: folderPath,
+        excluded: folder1ExcludedItems
+      }
+    },
+    selectedFolder: {
+      id: '1'
+    },
+    selectedBulkFolderID: '1',
+    modalState: {
+      isOpen: false
+    },
+    modalTemplateFlags: {
+      includeAssets: false,
+      excludeAssets: false,
+      includeFolder: false,
+      excludeFolder: false
+    },
+    selectedAlfrescoItems,
+    viewTabs: { selectedView: 'unpaired' },
+    filter: { alfrescoSearch: { search: 'abc' } }
+  }
+}
+
+const assetsExcludedProjects = [
+  {
+    id: 'asset1',
+    excludedProjects: ['urn:pearson:distributable:222', assetPlanURN]
+  },
+  { id: 'asset2', excludedProjects: [assetPlanURN] }
+]
+
+const includedItemsExcludedProjectValuesStub = sinon.stub().returns(Promise.resolve())
+const delayTillUpdatedStub = sinon.stub().returns(Promise.resolve())
+const folderItemsDetailsStub = sinon.stub().returns(getAlfrescoFolderItemStubResult)
+const stubbedExcludeIncludeUpdate = sinon.stub()
+const stubbedExcludedItemsExcludedProjectValues = sinon.stub().returns(assetsExcludedProjects)
+const stubOpenFolder = sinon.stub().returns(Promise.resolve())
+const dispatchStub = sinon.stub()
+const fetchLibStub = sinon.stub().returns()
+const hasAssetBeenUpdatedStub = sinon.stub().resolves(true)
+
+const configure = stateOverride => {
+  const state = Object.assign(initialState, stateOverride)
+  const mockStore = configureStore()(state)
+  setStore(mockStore)
+  return mockStore
+}
+
+let store
+const setup = (state = initialState) => {
+  store = configure(state)
+  return store
+}
+
+describe('ExcludeIncludeController', () => {
+  beforeEach(() => {
+    rewireAPI.__Rewire__('openFolder', stubOpenFolder)
+    rewireAPI.__Rewire__('getAlfrescoExcludedItemsService', {
+      excludedItemsExcludedProjectValues: stubbedExcludedItemsExcludedProjectValues
+    })
+    rewireAPI.__Rewire__('excludeIncludeService', {
+      update: stubbedExcludeIncludeUpdate
+    })
+    rewireAPI.__Rewire__('getAlfrescoFolderItemsService', {
+      includedItemsExcludedProjectValues: includedItemsExcludedProjectValuesStub,
+      folderItemsDetails: folderItemsDetailsStub
+    })
+    rewireAPI.__Rewire__('alfrescoItemService', {
+      delayTillUpdated: delayTillUpdatedStub
+    })
+    rewireAPI.__Rewire__('dispatch', dispatchStub)
+    rewireAPI.__Rewire__('fetchLib', fetchLibStub)
+    rewireAPI.__Rewire__('hasAssetBeenUpdated', hasAssetBeenUpdatedStub)
+  })
+
+  afterEach(() => {
+    delayTillUpdatedStub.resetHistory()
+    folderItemsDetailsStub.resetHistory()
+    includedItemsExcludedProjectValuesStub.resetHistory()
+    stubbedExcludeIncludeUpdate.resetHistory()
+    stubbedExcludedItemsExcludedProjectValues.resetHistory()
+    hasAssetBeenUpdatedStub.resetHistory()
+    stubOpenFolder.resetHistory()
+    rewireAPI.__ResetDependency__('openFolder')
+    rewireAPI.__ResetDependency__('FolderController')
+    rewireAPI.__ResetDependency__('getAlfrescoExcludedItemsService')
+    rewireAPI.__ResetDependency__('excludeIncludeService')
+    rewireAPI.__ResetDependency__('getAlfrescoFolderItemsService')
+    rewireAPI.__ResetDependency__('alfrescoItemService')
+    rewireAPI.__ResetDependency__('dispatch')
+    fetchLibStub.resetHistory()
+    rewireAPI.__ResetDependency__('fetchLib')
+  })
+
+  it('executeBulkExclude should successfully called once', async () => {
+    const executeBulkExcludeStub = sinon.stub().resolves(1)
+    rewireAPI.__Rewire__('executeBulkExclude', executeBulkExcludeStub)
+    await bulkExclude()
+    expect(executeBulkExcludeStub).to.have.been.calledOnce
+    executeBulkExcludeStub.resetHistory()
+  })
+
+  it('executeExclude should successfully called once', async () => {
+    const executeExcludeStub = sinon.stub().resolves(1)
+    rewireAPI.__Rewire__('executeExclude', executeExcludeStub)
+    await exclude()
+    expect(executeExcludeStub).to.have.been.calledOnce
+    executeExcludeStub.resetHistory()
+  })
+
+  it('bulkInclude should call executeBulkInclude', async () => {
+    const executeBulkIncludeStub = sinon.stub().resolves(1)
+    rewireAPI.__Rewire__('executeBulkInclude', executeBulkIncludeStub)
+    configure(initialState)
+    await bulkInclude()
+    expect(executeBulkIncludeStub).to.have.been.calledOnce
+  })
+
+  it('executeInclude should call executeBulkInclude', async () => {
+    const executeIncludeStub = sinon.stub().resolves(1)
+    rewireAPI.__Rewire__('executeInclude', executeIncludeStub)
+    configure(initialState)
+    await executeBulkInclude()
+    expect(executeIncludeStub).to.have.been.calledOnce
+  })
+
+  it('executeExclude should successfully called once', async () => {
+    const executeExcludeStub = sinon.stub()
+    rewireAPI.__Rewire__('executeExclude', executeExcludeStub)
+    await executeBulkExclude()
+    expect(executeExcludeStub).to.have.been.calledOnce
+    executeExcludeStub.resetHistory()
+  })
+
+  it('returns true if hasAssetBeenUpdated function called with exclude action', async () => {
+    const result = await hasAssetBeenUpdated(
+      'exclude',
+      folderPath,
+      cmisURL,
+      assetID,
+      assetPlanURN
+    )
+    expect(result).to.be.false
+  })
+
+  it('returns true if hasAssetBeenUpdated function called with include action', async () => {
+    const result = await hasAssetBeenUpdated(
+      'include',
+      folderPath,
+      cmisURL,
+      assetID,
+      assetPlanURN
+    )
+    expect(result).to.be.true
+  })
+
+  it('returns true if delayTillUpdated function called', async () => {
+    const result = await delayTillUpdated(
+      'exclude',
+      folderPath,
+      cmisURL,
+      assetID,
+      assetPlanURN,
+      22,
+      25000
+    )
+    expect(result).to.be.true
+    expect(result).to.be.equal(true)
+  })
+
+  it('folderItemsDetailsStub should successfully called once', async () => {
+    executeBulkExclude()
+    expect(folderItemsDetailsStub).to.be.calledOnce
+  })
+
+  it('executeInclude should successfully called once', async () => {
+    const itemsToInclude = ['asset1', 'asset2', 'asset3']
+    const folderID = '1'
+    executeInclude(folderID, itemsToInclude)
+    expect(dispatchStub).to.have.been.called
+  })
+
+  it('getExcludedProjectsForGivenID should successfully called once', async () => {
+    getExcludedProjectsForGivenID(1, assetsExcludedProjects)
+    expect(dispatchStub).to.have.been.called
+  })
+
+  it('executeExclude should successfully exclude the given assets', async () => {
+    const itemsToExclude = ['asset1', 'asset2']
+    const folderID = '1'
+    setup()
+    await executeExclude(folderID, itemsToExclude)
+    expect(dispatchStub).to.have.been.calledWith({ type: 'SHOW_ASSET_PLAN_VIEW_LOADER' })
+    expect(includedItemsExcludedProjectValuesStub).to.have.been.calledWith(
+      cmisURL,
+      folderPath,
+      assetPlanURN,
+      { search: 'abc' }
+    )
+  })
+
+  it('include should call executeInclude', async () => {
+    const executeIncludeSpy = sinon.stub()
+    rewireAPI.__Rewire__('executeInclude', executeIncludeSpy)
+    setup()
+    await include()
+    expect(executeIncludeSpy).to.have.been.calledWith(
+      '1',
+      selectedAlfrescoItems
+    )
+    executeIncludeSpy.resetHistory()
+  })
+
+  it('bulkInclude should call executeBulkInclude', async () => {
+    configure(initialState)
+    await bulkInclude()
+    expect(dispatchStub).to.have.been.called
+  })
+
+  it('bulkInclude should call executeBulkInclude', async () => {
+    const folderID = '1'
+    const itemsToInclude = ['asset1', 'asset2', 'asset3']
+    await postUpdate(
+      'include',
+      folderID,
+      itemsToInclude.length
+    )
+    expect(dispatchStub).to.have.been.calledWith({ type: 'HIDE_ASSET_PLAN_VIEW_LOADER' })
+  })
+})
+
+
+
+-------------------------------------------------------------
+
+/* eslint import/no-named-default:0 */
+import { expect } from 'chai'
+import { stub } from 'sinon'
+import { UPDATE_ERROR_HISTORY } from 'actions/constants'
+import {
+  ASSET_PLAN_URN,
+  CHOSEN_ASSET_URN,
+  URN_PREFIX,
+  FIELD_CONTRIBUTOR_TYPE,
+  FIELD_CONTRIBUTOR_NAME
+} from 'api/constants'
+import configureStore from 'redux-mock-store'
+import { setStore } from 'store/storeContainer'
+import {
+  checkAssetByURN,
+  __RewireAPI__ as RewireAPI
+} from '../checkAssetByURN'
+import { initialState, initialStateWithVerifiedSource } from './fixtures/checkWorksAndIDs'
+
+const configure = state => {
+  const mockStore = configureStore()(state)
+  setStore(mockStore)
+  return mockStore
+}
+
+const { fieldMap } = initialState.assetPlanRequest
+
+const errorStub = stub().rejects(new TypeError())
+
+
+let searchWorkByURNStub
+const searchWorkByURNOkStub = stub().resolves({
+  'urn:pearson:work:abc-123': {
+    [ASSET_PLAN_URN]: 'urn:pearson:distributable:uuid',
+    [CHOSEN_ASSET_URN]: 'urn:pearson:work:abc-123'
+  }
+})
+
+const requestIdValidatorStub3 = stub()
+requestIdValidatorStub3.onCall(0).returns(
+  { duplicateRequestIds: ['abc'], isRequestIdTooShort: true, requestIds: ['123456'] }
+)
+requestIdValidatorStub3.onCall(1).returns(
+  { duplicateRequestIds: ['abc'], isRequestIdTooShort: true, requestIds: ['123499'] }
+)
+const requestIdValidatorStub4 = stub()
+requestIdValidatorStub4.onCall(0).returns({ duplicateRequestIds: [], requestIds: ['abc'] })
+requestIdValidatorStub4.onCall(1).returns({ duplicateRequestIds: [], requestIds: ['cde'] })
+requestIdValidatorStub4.onCall(2).returns({ duplicateRequestIds: [], requestIds: ['cdg'] })
+requestIdValidatorStub4.onCall(3).returns({ duplicateRequestIds: [], requestIds: ['cdf'] })
+
+describe('checkAssetByURN', () => {
+  afterEach(() => {
+    searchWorkByURNStub.resetHistory()
+    RewireAPI.__ResetDependency__('searchWorkByURN')
+  })
+
+  it('should not check source if rowData is empty', async () => {
+    searchWorkByURNStub = searchWorkByURNOkStub
+    RewireAPI.__Rewire__('searchWorkByURN', searchWorkByURNStub)
+
+    configure(initialState)
+    const result = await checkAssetByURN({ fields: fieldMap.fields, rowData: {} })
+
+    expect(searchWorkByURNStub).has.not.been.calledOnce
+    expect(result).to.eql({
+      rowDataFromUrn: {},
+      urnFound: false
+    })
+  })
+
+  it('should not check source if urn is empty', async () => {
+    searchWorkByURNStub = searchWorkByURNOkStub
+    RewireAPI.__Rewire__('searchWorkByURN', searchWorkByURNStub)
+
+    configure(initialState)
+    const result = await checkAssetByURN({
+      fields: fieldMap.fields,
+      rowData: {
+        [CHOSEN_ASSET_URN]: '  \n \r '
+      }
+    })
+
+    expect(searchWorkByURNStub).has.not.been.calledOnce
+    expect(result).to.eql({
+      rowDataFromUrn: {
+        [CHOSEN_ASSET_URN]: '  \n \r '
+      },
+      urnFound: false
+    })
+  })
+
+  it('should get searchWorkByURN work', async () => {
+    searchWorkByURNStub = searchWorkByURNOkStub
+    RewireAPI.__Rewire__('searchWorkByURN', searchWorkByURNStub)
+
+    configure(initialState)
+    const result = await checkAssetByURN({
+      fields: fieldMap.fields,
+      rowData:
+        { [CHOSEN_ASSET_URN]: `${URN_PREFIX}abc-123` }
+    })
+
+    expect(searchWorkByURNStub).has.been.calledOnce
+    expect(result).to.eql({
+      rowDataFromUrn: {
+        [ASSET_PLAN_URN]: 'urn:pearson:distributable:uuid',
+        [CHOSEN_ASSET_URN]: 'urn:pearson:work:abc-123',
+        [FIELD_CONTRIBUTOR_TYPE]: '',
+        [FIELD_CONTRIBUTOR_NAME]: ''
+      },
+      urnFound: true
+    })
+  })
+
+  it('should get searchWorkByURN work from previously verified work list', async () => {
+    searchWorkByURNStub = searchWorkByURNOkStub
+    RewireAPI.__Rewire__('searchWorkByURN', searchWorkByURNStub)
+    configure(initialStateWithVerifiedSource)
+    const result = await checkAssetByURN({
+      fields: fieldMap.fields,
+      rowData:
+        { [CHOSEN_ASSET_URN]: `${URN_PREFIX}abc-123` }
+    })
+
+    expect(result).to.eql({
+      rowDataFromUrn: {
+        'chosen-asset-urn': 'urn:pearson:work:abc-123',
+        'contributor-name': '',
+        'contributor-type': '',
+        'asset-plan-urn': 'urn:pearson:distributable:uuid'
+      },
+      urnFound: true
+    })
+  })
+
+  it('should dispatch to UPDATE_ERROR_HISTORY', async () => {
+    searchWorkByURNStub = errorStub
+    RewireAPI.__Rewire__('searchWorkByURN', searchWorkByURNStub)
+
+    const mockStore = configure(initialState)
+    await checkAssetByURN({
+      fields: fieldMap.fields,
+      rowData:
+        { [CHOSEN_ASSET_URN]: `${URN_PREFIX}abc-124` }
+    })
+
+    const actions = mockStore.getActions()
+    const expectedActions = [
+      {
+        type: UPDATE_ERROR_HISTORY,
+        from: 'checkAssetByURN',
+        message: 'TypeError'
+      }
+    ]
+
+    expect(actions[0].type).to.eql(expectedActions[0].type)
+    expect(actions[0].from).to.eql(expectedActions[0].from)
+    expect(actions[0].message.name).to.equal(expectedActions[0].message)
+  })
+})
+
+
+---------------------------------------------------------------
+
+
+
+import React from 'react'
+import sinon from 'sinon'
+import { shallow } from 'enzyme'
+import { expect } from 'chai'
+import { AssetPlanViewContainer, __RewireAPI__ as rewireAPI } from '../AssetPlanViewContainer'
+import AssetPlanMetadataView from '../../AssetPlanMetadataView'
+
+const setup = propOverrides => {
+  const props = Object.assign(
+    {
+      planDetails: {
+        id: 'test-asset-plan-urn'
+      },
+      product: {
+        ipmProjectId: {
+          idValue: ''
+        }
+      },
+      assetRequestsData: {},
+      taxonomies: {},
+      dataForCheckboxStatus: [],
+      assetViewData: {},
+      permissions: {
+        canViewAssetRequirement: true,
+        canCreateAssetRequirement: true,
+        canEditAssetRequirement: true,
+        canImportAssetRequirement: true
+      },
+      actions: {
+        alfrescoPickerPopUp: sinon.spy(),
+        lastSelectedIndex: sinon.spy()
+      },
+      history: {
+        length: 37,
+        action: 'POP',
+        location: {
+          pathname: '/assetplan/f6cbfbfb-25ef-4fb5-addd-1356429aa139',
+          search: '',
+          hash: ''
+        },
+        push: sinon.spy()
+      },
+      showMetaDataView: true
+    },
+    propOverrides
+  )
+
+  const wrapper = shallow(<AssetPlanViewContainer {...props} />)
+
+  return {
+    wrapper,
+    instance: wrapper.instance(),
+    btnImportXls: wrapper.find('[data-qa~="btn-import-xls"]'),
+    btnAssetPlanDetails: wrapper.find('[data-qa~="btn-asset-plan-details"]'),
+    btnAssetPairing: wrapper.find('[data-qa~="btn-asset-pairing"]'),
+    btnCreateAssetRequest: wrapper.find('[data-qa~="btn-create-asset-request"]'),
+    actionPanel: wrapper.find('[data-qa~="action-panel"]'),
+    assetPlanMetadataView: wrapper.find(AssetPlanMetadataView)
+  }
+}
+const initAssetPlanDetailFormFieldMapStub = sinon.stub()
+
+const setAssetViewDataStub = sinon.stub()
+
+describe('AssetPlanView component', () => {
+  before('setup', () => {
+    rewireAPI.__Rewire__('initAssetPlanDetailFormFieldMap', initAssetPlanDetailFormFieldMapStub)
+  })
+  after('reset', () => {
+    initAssetPlanDetailFormFieldMapStub.resetHistory()
+    rewireAPI.__ResetDependency__('initAssetPlanDetailFormFieldMap')
+  })
+  beforeEach(() => {
+    rewireAPI.__Rewire__('setAssetViewData', setAssetViewDataStub)
+  })
+  afterEach(() => {
+    setAssetViewDataStub.resetHistory()
+    rewireAPI.__ResetDependency__('setAssetViewData')
+  })
+  it('Should render AssetPlanView component', () => {
+    const { wrapper } = setup()
+    expect(wrapper.exists()).to.equal(true)
+  })
+  it('Should render ActionPanel component', () => {
+    const { wrapper } = setup()
+    const component = wrapper.find('[data-qa~="action-panel"]')
+    expect(component.exists()).to.equal(true)
+  })
+  it('Should render AssetRequestList component', () => {
+    const { wrapper } = setup()
+    const component = wrapper.find('[data-qa~="asset-view-request-list"]')
+    expect(component.exists()).to.equal(true)
+  })
+  it('Should call handleImageClick function', () => {
+    const { instance } = setup()
+    instance.handleImageClick()
+    expect(instance.props.history.push).to.be.calledOnce
+  })
+  it('Should call handleAssetNotInAlfresco function', () => {
+    const { instance } = setup()
+    instance.handleAssetNotInAlfresco()
+    expect(instance.props.history.push).to.be.calledOnce
+  })
+  it('Should redirect to Import page when clicked on Import button', () => {
+    const { btnImportXls, instance } = setup()
+    btnImportXls.simulate('click')
+    expect(instance.props.history.push).to.be.calledOnce
+  })
+  it('Should call redirectToAssetPairing function', () => {
+    const { btnAssetPairing, instance } = setup()
+    btnAssetPairing.simulate('click')
+    expect(instance.props.history.push).to.be.calledOnce
+  })
+  it('Should call handleAddAsset function', () => {
+    const { instance } = setup()
+    const spy = sinon.spy()
+    instance.redirect = spy
+    instance.handleAddAsset()
+    expect(spy).to.be.calledOnce
+  })
+  it('Should call redirect function', () => {
+    const { instance } = setup()
+    instance.redirect()
+    expect(instance.props.history.push).to.be.calledOnce
+  })
+  it('Should render Import XLS button', () => {
+    const { btnImportXls } = setup()
+    expect(btnImportXls.exists()).to.equal(true)
+  })
+  it('Should render Asset plan details button', () => {
+    const { btnAssetPlanDetails } = setup()
+    expect(btnAssetPlanDetails.exists()).to.equal(true)
+  })
+  it('Should render Asset pairing button', () => {
+    const { btnAssetPairing } = setup()
+    expect(btnAssetPairing.exists()).to.equal(true)
+  })
+  it('Should render AssetPlanMetadataView component', () => {
+    const { assetPlanMetadataView } = setup()
+    expect(assetPlanMetadataView.exists()).to.equal(true)
+  })
+  it('Should render Create Asset Request button', () => {
+    const { btnCreateAssetRequest } = setup()
+    expect(btnCreateAssetRequest.exists()).to.equal(true)
+  })
+  it('Should not disable Import XLS button if canImportAssetRequirement is true', () => {
+    const { btnImportXls } = setup()
+    expect(btnImportXls.prop('disabled')).to.equal(false)
+  })
+  it('Should disable Import XLS button if canImportAssetRequirement is false', () => {
+    const { btnImportXls } = setup({
+      permissions: {
+        canImportAssetRequirement: false
+      }
+    })
+    expect(btnImportXls.prop('disabled')).to.equal(true)
+  })
+  it('Should not disable Asset Plan Detail button if canViewAssetRequirement is true', () => {
+    const { btnAssetPlanDetails } = setup()
+    expect(btnAssetPlanDetails.prop('disabled')).to.equal(false)
+  })
+  it('Should disable Asset Plan Detail button if canViewAssetRequirement is false', () => {
+    const { btnAssetPlanDetails } = setup({
+      permissions: {
+        canViewAssetRequirement: false
+      }
+    })
+    expect(btnAssetPlanDetails.prop('disabled')).to.equal(true)
+  })
+  it('Should not disable Asset Pairing button if canEditAssetRequirement is true', () => {
+    const { btnAssetPairing } = setup()
+    expect(btnAssetPairing.prop('disabled')).to.equal(false)
+  })
+  it('Should disable Asset Pairing button if canEditAssetRequirement is false', () => {
+    const { btnAssetPairing } = setup({
+      permissions: {
+        canEditAssetRequirement: false
+      }
+    })
+    expect(btnAssetPairing.prop('disabled')).to.equal(true)
+  })
+  it('Should show warning message if IPM project number is blank', () => {
+    const { wrapper } = setup()
+    const component = wrapper.find('[data-qa~="warning-message"]')
+    expect(component.exists()).to.equal(true)
+  })
+  it('Should not show warning message if IPM project number is available', () => {
+    const { wrapper } = setup({
+      product: {
+        ipmProjectId: {
+          idValue: '1234'
+        }
+      }
+    })
+    const component = wrapper.find('[data-qa~="warning-message"]')
+    expect(component.exists()).to.equal(false)
+  })
+})
+
+
+---------------------------------------------------------

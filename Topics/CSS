@@ -1,0 +1,8 @@
+flex property
+
+1. flex-direction : The flex-direction property defines in which direction the container wants to stack the flex items.
+2. flex-wrap : The flex-wrap property specifies whether the flex items should wrap or not.
+3. flex-flow : The flex-flow property is a shorthand property for setting both the flex-direction and flex-wrap properties.
+4. justify-content : The justify-content property is used to align the flex items.
+5. align-items : The align-items property is used to align the flex items vertically.
+6. align-content : The align-content property is used to align the flex lines.

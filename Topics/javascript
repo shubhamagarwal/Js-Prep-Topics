@@ -1,0 +1,1037 @@
+10 important concepts you must practice to be a good Javascript Developer:
+1. call, apply and bind method
+2. Polyfill for bind method
+3. Currying
+4. Debouncing
+5. async vs defer 
+6. Event Bubbling, Capturing aka Trickling
+7. Event Delegation
+8. Prototype & Prototypal Inheritance
+9. Throttling
+10. Thinking Recursively
+11. named functions
+
+Microsoft : https://cloudsociety.microsoft.com/en?wt.mc_id=AID2423012_QSG_PD_SCL_372711
+
+https://dev.to/spukas: all JS topics
+https://dev.to/emmabostian
+-----------------------------------------------------------------------
+Prototypal inheritance
+
+function Rectangle( width, height ) {
+ this.width = width;
+ this.height = height;
+}
+
+
+Rectangle.prototype.area = function() {
+ return this.width * this.height;
+};
+
+var rect = new Rectangle( 3, 4 );
+alert(rect.area()); // 12
+
+
+function Square( length ) {
+ this.width = this.height = length;
+}
+
+Square.prototype = Object.create( Rectangle.prototype );
+
+var square = new Square( 4 );
+square.area(); // 16
+16
+
+
+
+
+
+
+
+function Vehicle(name) {
+  this.name = name;
+}
+
+Vehicle.prototype.start = function() {
+  return "Engine of " + this.name + " starting…";
+};
+ 
+
+function Car(name) {
+  this.name = name;//Vehicle.call(this, name); 
+}
+
+Car.prototype = Object.create(Vehicle.prototype);
+
+Car.prototype.start = function() {
+  console.log("Gidday! " + Vehicle.prototype.start.call(this));
+};
+ 
+
+var c1 = new Car("Infiniti G37");
+ 
+c1.start();
+
+-------------------------------
+
+classical inheritance
+
+function Person(fName, lName) {
+    this.fName = fName;
+    this.lName = lName;
+}
+
+
+function Professional(fName, lName){
+    Person.call(this, fName, lName);
+}
+
+Professional.prototype.showName = function() {
+    return this.fName;
+}
+
+
+let prof = new Professional('abc', 'def');
+prof.showName();
+
+
+
+----------------------------------------------------
+
+Block scope
+
+function foo(){
+    if(true){
+        var fruit1 = 'apple';        //exist in function scope
+        const fruit2 = 'banana';     //exist in block scope
+        let fruit3 = 'strawberry';   //exist in block scope
+
+    }
+    console.log(fruit1);
+    console.log(fruit2);
+    console.log(fruit3);
+}
+
+foo();
+
+-------------------------------------------------------
+Promise Example :-
+
+function anyscMethod(message) {
+ return new Promise(function(resolve, reject) {
+	setTimeout(function() {
+		console.log('hello')
+		resolve();	
+	}, 500)
+ })
+}
+
+function findUser(){
+	return anyscMethod('Find User')
+}
+
+function validateUser() {
+  return anyscMethod('Validate User')
+}
+anyscMethod('open DB connection')
+	.then(findUser)
+	.then(validateUser)
+	.then(function () {})
+	
+----------------------------------------------------------------
+
+use strict : https://www.youtube.com/watch?v=ug7TYXYAKWc
+
+----------------------------------
+
+'use strict'
+function foo() {
+ console.log(have);
+}
+foo()
+var have = 2;
+---------------
+var foo = 1; 
+function bar() {
+if (!foo) { 
+ var foo = 10;
+} 
+alert(foo); 
+} 
+bar();
+-----------
+
+'use strict'
+function foo() {     
+console.log(have);
+}
+
+function goo(){   
+var have = 2;  
+foo(); 
+} 
+goo()
+
+-------------------
+
+"use strict"
+var obj = {
+    fun: function() {
+        console.log(this.test)
+        function inside() {
+            console.log(this.test)
+        }
+        inside()
+        console.log(this.child)
+    },
+    test: 'abc',
+    child: 'no'
+}
+
+ 
+
+var test = 'abcd'
+var child = 'hey'
+obj.fun()
+
+-----------------------------------
+"use strict"
+var obj = {
+    fun: function() {
+        console.log(this.test)
+         var outside = 'out'
+        function inside() {
+            console.log(outside)
+            console.log(this.test)
+        }
+        inside()
+        console.log(this.child)
+    },
+    test: 'abc',
+    child: 'no'
+}
+
+ 
+
+var test = 'abcd'
+var child = 'hey'
+obj.fun()
+---------------------------------------
+
+var myObject = {
+    foo: "bar",
+    func: function() {
+        var self = this;
+        console.log("outer func:  this.foo = " + this.foo);
+        console.log("outer func:  self.foo = " + self.foo);
+        (function() {
+            console.log("inner func:  this.foo = " + this.foo);
+            console.log("inner func:  self.foo = " + self.foo);
+        }());
+    }
+};
+myObject.func();
+
+--------------------------------------
+
+'use strict'
+
+function Animal(name) {
+    this.name = 'myname'
+    this.animalname = name;
+}
+
+var anim = Animal('smart');
+console.log(anim.name)
+console.log(anim.animalname)
+
+------------------------------------------------
+
+'use strict'
+
+ 
+
+function Person(fname, lname) {
+    this.fname = fname;
+    this.lname = lname;
+    this.fullname = function() {
+        console.log(this.fname + ' ' +  this.lname)
+    }
+}
+
+ 
+
+Person.prototype.fullname = function() {
+    console.log('my full name is:' + this.fname + ' ' + this.lname)
+}
+
+ var pers = new Person('richard', 'nexon')
+pers.fullname()
+------------------------------------------
+var foo = [];
+for(var i=0;i<10;i++) {
+ foo[i] = function() { return i };
+}
+
+console.log(foo[0]());
+console.log(foo[1]());
+console.log(foo[2]());
+
+
+-----------------------------------------------------------------
+closure example
+
+var foo = [];
+for(var i=0;i<10;i++) {
+	(function(){
+		var y = i;
+		foo[i] = function() {
+			return y;
+		};
+	}();
+}
+
+console.log(foo[0]());
+console.log(foo[1]());
+console.log(foo[2]());
+------------------------------------------------
+
+console.log(moo);
+var moo = function() {
+    console.log("loo");
+};
+
+--------------------------------------------
+
+this
+
+var asim = {
+ checkThis: function() {
+	console.log(this);
+	
+	function abc(){
+		console.log(this);
+	}
+	abc();
+ }
+}
+
+asim.checkThis();
+
+-------------------------------------------
+this
+
+var asim = {
+ checkThis: function() {
+	console.log(this);
+	
+	function abc(){
+		this.moo = 'shubham'
+		console.log(this);
+	}
+	abc();
+	console.log(this.moo)
+ }
+}
+
+asim.checkThis();
+
+-------------------------------------
+this
+
+var asim = {
+ checkThis: function() {
+	var self = this;
+	console.log(self);
+	
+	function abc(){
+		self.moo = 'shubham'
+		console.log(self);
+	}
+	abc();
+	console.log(self.moo);
+	console.log(this.moo);
+	console.log(window.moo);
+ }
+}
+
+asim.checkThis();
+
+---------------------------------------------------------
+call
+
+"use strict"
+function asim() {
+	console.log(this);
+}
+
+asim.call(1);
+
+
+
+-----
+
+
+
+function a(b,c,d) {
+ console.log(this);
+ console.log(b);
+ console.log(c);
+ console.log(d);
+ 
+}
+
+a.call(1,2,3,4);
+
+---------
+function a(b,c,d) {
+ console.log(this);
+ console.log(b);
+ console.log(c);
+ console.log(d);
+ 
+}
+
+a.call(1,[2,3,4]);
+
+---------
+
+var a = function(){
+	console.log(this).
+}.bind(1);
+
+a();
+
+------------
+
+var asim = {
+ checkThis: function(){
+   var checkOther = function(){
+     console.log(this);
+   }.bind(this);
+   checkOther();
+ }
+}
+
+asim.checkThis();
+
+
+
+
+-------------------------------------------------------
+
+private property in class
+
+class Something {
+  #property;
+
+  constructor(){
+    this.#property = "test";
+  }
+}
+
+const instance = new Something();
+console.log(instance.property);
+
+---------------------------------------------------------------------
+
+class CM {
+  #abc = 0;
+   get abc() {
+    return this.#abc;
+  }
+   set abc(value) {
+    if (value < 0) throw new Error("Negative value");
+    this.#abc = value;
+  }
+}
+let mach = new CM();
+console.log(mach.abc)
+
+-------------------------------------------------------
+
+
+const Translator = {
+  translations: {
+    'tree': 'treeInDifferentLanguage'
+  },
+  trans(key) {
+    if (this.translations && this.translations[key]) {
+      return this.translations[key]
+    }
+    
+    return key
+  }
+}
+
+console.info(Translator.trans('tree')) 
+
+
+const trans = Translator.trans;
+
+console.info(trans('tree')); 
+
+-------------------------------------------------------------
+
+var add = (function () {
+  var counter = 0;
+  return function () {counter += 1; return counter}
+})();
+
+add();
+add();
+add();
+
+---------------------------------------
+
+
+async function check() {
+    var pro = (x) => {
+    return new Promise(function(resolve, reject) {
+        setTimeout(function(){
+          resolve(console.log('inside timeout ' + x));
+        }, x);
+    });
+    }
+    var arr = [1000,2000,3000,4000]
+    console.log('before');
+    arr.forEach(async i=>{
+        await pro(i)
+        console.log('here')
+    })
+    console.log('after');
+}
+
+ 
+
+check();
+
+----------------------------------------------
+https://zellwk.com/blog/async-await-in-loops/
+
+async function check() {
+  var pro = (x) => {
+    return new Promise(function(resolve, reject) {
+    setTimeout(function(){
+      resolve(console.log('inside timeout ' + x));
+    }, x);
+  });
+  }
+  var arr = [1000,2000,3000,4000]
+  console.log('before');
+  for (var i=0; i<arr.length; i++){
+    await pro(arr[i])
+    console.log('here')
+  }
+  console.log('after');
+}
+
+ 
+
+check();
+
+--------------------------------------------
+
+function a() {
+var myVar = 3;    
+    function b() {
+        
+        console.log(myVar);
+		myVar = 2;
+    }
+    
+    b();
+console.log(myVar);
+}
+
+var myVar = 1;
+a();
+
+---------------------------------
+var a = {
+
+    b: function() {
+
+        return this;
+
+    }
+
+};
+
+var c= {};
+
+
+c.d = a.b;
+
+console.log(c.d());
+------------------------------------------
+
+function a() {
+    function b() {
+        console.log(myVar);
+    }
+    b();
+    var myVar = 2;
+}
+
+ 
+
+var myVar = 1;
+a();
+
+--------------------------------------	
+function a() {
+    function b() {
+        myVar = 3;
+        console.log(myVar);
+    }
+    let myVar = 2;
+    b();
+console.log(myVar);
+    
+}
+
+var myVar = 1
+a();
+console.log(myVar);
+---------------------------------------
+
+singleton pattern
+
+let User = function(){
+    if (typeof(User.instance) === 'object')
+        return User.instance
+
+ 
+
+    this.number = Math.random()
+
+ 
+
+    User.instance = this
+}
+ 
+let us1 = new User()
+let us2 = new User()
+---------------------------------------------------------------
+
+reveling pattern
+
+let User = function(name){
+    name = name;
+    getName = function() {
+        return name
+    }
+    this.getFullName = function() {
+        return this.getName()
+    }
+}
+
+let counter = function(){
+    let count = 0;
+    return {
+        count,
+        getCount: function(){
+            return ++count;
+        }
+    }
+}
+
+--------------------------------------------------------
+
+var abc = [{a:1}, {a:2, b:5}, {a:5, b:3, c:8}]
+ 
+1. abc.filter(({a})=>a === 2)
+2. abc.find(({a})=>a === 2)
+
+----------------------------------------------------------------
+
+private proprety in class
+
+class Something {
+  #property;
+
+  constructor(){
+    this.#property = "test";
+  }
+
+  #privateMethod() {
+    return 'hello world';
+  }
+
+  getPrivateMessage() {
+      return this.#privateMethod();
+  }
+}
+
+const instance = new Something();
+console.log(instance.property); //=> undefined
+console.log(instance.privateMethod); //=> undefined
+console.log(instance.getPrivateMessage()); //=> hello world
+
+-----------------------------------------------------------
+
+
+private, priviaged, public in JS
+
+
+function Kid(name){
+ var idol = "shubham"; // private
+ this.getIdol = function() {  //priviaged
+	return idol;
+ }
+ 
+ this.name = name;
+}
+
+
+
+-----------------------------------------------------
+
+var cnt = 0;
+function abc(){
+
+++cnt;
+return false;
+}
+
+function abcd(){
+
+++cnt;
+return true;
+}
+
+var output = abc() || abcd()
+
+
+---------------------------------------------------------
+
+function fun(input, input1){
+
+	return function(input, input1) {
+
+		return input + input1;
+	}
+
+}
+
+fun(2,3)(5,4)
+
+-----------------------------
+
+var F = function(){}
+var obj = new F();
+console.log(obj.constructor === F);
+
+
+------------------------------------
+
+var a={},
+b={key:'b'},
+c={key:'c'};
+a[b] = 123;
+a[c] = 456;
+console.log(a[b])
+
+----------------------------------------------
+
+var User = {
+    _name : 'shubham',
+    getName : function() {
+        return this._name
+    }
+    
+}
+
+
+// var a = User.getName();
+// User.getName();
+
+
+------------------------------------------------------
+
+remmove char if concosetive vowels found out 
+var abc = ['a', 'e', 'i', 'o', 'u'];
+
+var arr = 'aua'; // output abc
+var arr = 'pool'; // output pol
+
+var final = arr.split('').reduce((acc,ele) => {
+	if(abc.includes(ele)) {
+		if(!acc.includes(ele)) {
+	acc.push(ele);
+}
+	} else {
+		acc.push(ele);
+	}
+return acc;
+
+},[])
+
+
+-----------------------------------------------
+
+var employee =
+
+{
+
+company: 'xyz'
+
+}
+
+var emp1 = Object.create(employee);
+
+delete emp1.company 
+
+console.log(emp1.company);
+-------------------------------------------------------------
+(function(){ 
+
+     var a = b = 3;
+
+ })(); 
+
+console.log("a defined? " + (typeof a !== 'undefined')); 
+
+console.log("b defined? " + (typeof b !== 'undefined'));
+
+-------------------------------------------
+var arr1 = "john".split(''); 
+
+var arr2 = arr1.reverse(); 
+
+var arr3 = "jones".split(''); 
+
+arr2.push(arr3); 
+
+console.log("array 1: length=" + arr1.length + " last=" + arr1.slice(-1)); 
+
+console.log("array 2: length=" + arr2.length + " last=" + arr2.slice(-1));
+----------------------------------------------------------------------------------
+array reference https://www.dyn-web.com/javascript/arrays/value-vs-reference.php
+
+var ar = [
+    ['apple', 'orange', 'pear'],
+    ['carrots', 'beans', 'peas'],
+    ['cookies', 'cake', 'muffins', 'pie']
+];
+
+var ar2 = ar.concat(); 
+
+ar2[1][1] = 'cabbage';
+
+console.log( ar[1] );
+
+-------------------------------------
+
+var sum = function(a){
+return function(b){
+	if(b){
+     return sum(a+b);
+}
+return a;
+}
+
+
+}
+
+sum(1)(3)(5)() //9
+-----------------
+
+
+class DS{
+  constructor(x){
+    this.x = x;
+  }
+  static addDSTest(f, b){
+    return f.x + b.x + b.y;
+  }
+}
+class Test extends DS{
+  constructor(x, y){
+    super(x);
+    this.y = y;
+  }
+}
+let f = new DS(5);
+let b = new Test(5, 5);
+console.log(Test.addDSTest(f, b));
+
+----------------------------------------
+
+how many seconds it will take
+
+setTimeout(function(){console.log("hi")},1000)
+setTimeout(function(){console.log("hi")},1000)
+setTimeout(function(){console.log("hi")},1000)
+setTimeout(function(){console.log("hi")},1000)
+setTimeout(function(){console.log("hi")},1000)
+
+---------------------------------------------
+
+const array = [16, 32, 64, 128];
+for (var i = 0; i < array.length; i++) {
+   setTimeout(function() {
+     console.log('Ind_Val: ' + i + ', elem: ' + array[i]);
+   }, 3000);
+}
+
+--------------------------------------
+
+
+const fn = a => console.log(a)
+
+for(var i = 0; i < 3; i++) {
+	setTimeout(function()  {
+		fn(i);
+	}, 0);
+}
+
+for(let i = 0; i < 3; i++) {
+	setTimeout(function() {
+		fn(i);   
+	}, 0); 
+}
+
+
+--------------------------------------------
+
+
+function app() {
+    return new Promise(function(resolve, reject) {
+    reject();
+    });
+}
+let promise = app();
+promise
+.then(function() {
+    console.log('Promise Success 1');
+})
+.then(function() {
+    console.log('Promise Success 2');
+}) 
+.then(function() {
+    console.log('Promise Success 3');
+})
+.catch(function() {
+    console.log('Promise Error 1');
+})
+.then(function() {
+    console.log('Promise Success 4');
+});
+
+
+--------------------------------------------
+
+
+What is the output ?
+function foo(a) {
+	var b = a * 2;
+	function bar(c) {
+		console.log(a, b, c);
+	}
+	bar(b * 3);
+}
+foo(2);
+
+------------------------------------
+
+for(var i=1;i<=5;i++) {
+    setTimeout(function timer() {
+        console.log(i);
+    }, i* 1000)
+}
+
+
+--------------------------------------
+
+var obj = {
+    val: 0,
+    inc() {
+        this.val++;
+        console.log(this.val);
+    }
+};
+var inc = obj.inc;
+inc();
+inc.call(obj);
+obj.inc();
+var obj2 = {val: 2};
+var inc2 = inc.bind(obj2);
+inc2();
+
+
+-----------------
+
+function A(id) {
+    console.log(`in A(${id})`);
+}
+class C extends A {
+    constructor(id) {
+        super(id);
+        console.log(`in B(${id})`);
+    }
+}
+var b = new C(2);
+
+----------------------
+var add = (function () {
+  let balance = 40;
+	
+  return function b() {
+		 balance = 60;
+    return balance;
+	}
+})();
+
+------------------------
+
+function abc(){
+	var a=9; 
+	function a(){
+	};
+	console.log(a);
+} // Output 9
+
+function abc(){
+	var a; 
+	function a(){
+	};
+	console.log(a);
+} //Output a(){}
+
+
+-------------------------------
+
+function sumArray(array) {
+  let sum = 0;
+   array.forEach((item) => {
+     if(Array.isArray(item)) {
+        sum = sum + sumArray(item);
+     }  else {
+         sum += item;
+     }
+   })
+   return sum
+}
+
+sumArray([1,[2,3]])
+
+
+
+If both operands have different types, they are not strictly equal
+If both operands are null, they are strictly equal
+If both operands are undefined, they are strictly equal
+If one or both operands are NaN, they are not strictly equal
+If both operands are true or both false, they are strictly equal
+If both operands are numbers and have the same value, they are strictly equal
+If both operands are strings and have the same value, they are strictly equal
+If both operands have reference to the same object or function, they are strictly equal
+In all other cases operands are not strictly equal.
+
+------------------------------------------------------------
+use selector hooks
+
+https://react-redux.js.org/next/api/hooks#equality-comparisons-and-updates
+
+https://thoughtbot.com/blog/using-redux-with-react-hooks
